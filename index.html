@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Catalogue intelligent SACRI · Démonstration</title>
+<meta name="description" content="Démonstration d'un catalogue de pièces en ligne pour SACRI : recherche par référence, machine ou description.">
+<link rel="icon" href="https://sacri-ci.com/assets/images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=202611161814">
+</head>
+<body>
+<div class="demo-bar"><b>Démonstration</b>Maquette non publiée : articles, références, disponibilités et résultats fictifs. Aucune demande n'est envoyée.</div>
+<header class="top"><div class="wrap">
+  <a href="#" aria-label="SACRI, accueil"><img src="https://sacri-ci.com/assets/images/logo-sacri.png" alt="SACRI"></a>
+  <nav><a href="#catalogue">Catalogue</a><a href="#photo-id">Identifier une pièce</a><a href="#groupe">Le groupe</a><a class="cta" href="#catalogue">Trouver une pièce</a></nav>
+</div></header>
+
+<section class="hero" style="padding:0">
+<div class="wrap">
+  <div class="eyebrow">Catalogue intelligent · Groupe SACRI</div>
+  <h1>La bonne pièce,<br><em>trouvée en quelques secondes.</em></h1>
+  <p class="lead">Cherchez par référence, par machine ou en décrivant simplement ce qu'il vous faut. Pièces de rechange STIHL, transmission, hydraulique, lubrifiants et EPI.</p>
+  <form class="search" id="search" role="search">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+    <input id="q" type="search" autocomplete="off" placeholder="Ex. chaîne pour tronçonneuse 60 cm, MS 661, DEMO-0029…" aria-label="Rechercher une pièce">
+    <button type="submit">Rechercher</button>
+  </form>
+  <div class="examples"><span>Essayez :</span>
+    <button type="button" class="ex">« chaîne pour tronçonneuse 60 cm »</button>
+    <button type="button" class="ex">« FS 400 »</button>
+    <button type="button" class="ex">« huile hydraulique »</button>
+    <button type="button" class="ex">« flexible sur mesure »</button>
+  </div>
+  <div class="proof"><div><b>Depuis 1985</b>en Côte d'Ivoire</div><div><b>STIHL</b>représentant exclusif</div><div><b>ISO 9001</b>certifiée</div><div><b>5 sociétés</b>un seul catalogue</div></div>
+</div>
+</section>
+
+<section id="catalogue">
+<div class="wrap">
+  <div class="head"><div><div class="eyebrow">Catalogue</div><h2>Toutes les pièces du groupe</h2></div><span id="count"></span></div>
+  <div class="filters">
+    <label>Société du groupe</label><div class="chips" id="f-soc"></div>
+    <label>Famille</label><div class="chips" id="f-fam"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div style="text-align:center;margin-top:26px"><button type="button" class="btn btn-ln" id="more" hidden>Afficher plus</button></div>
+</div>
+</section>
+
+<section class="ident" id="photo-id">
+<div class="wrap ident-grid">
+  <div>
+    <span class="tag-demo">Démonstration</span>
+    <div class="eyebrow">Identifier une pièce par photo</div>
+    <h2>Une pièce usée, sans référence ? Prenez-la en photo.</h2>
+    <p class="lead">Déposez la photo de la pièce ou de la machine : le catalogue propose les pièces les plus proches, puis un conseiller SACRI confirme avant le devis.</p>
+    <p class="hint" style="margin-top:14px">Ici, la reconnaissance est simulée : la photo reste sur votre appareil et le résultat affiché est toujours le même exemple.</p>
+  </div>
+  <div class="drop" id="drop">
+    <div class="prev" id="id-prev">Aucune photo pour l'instant</div>
+    <div class="actions">
+      <label class="btn btn-or" for="photo">Déposer une photo</label>
+      <input type="file" id="photo" accept="image/*" hidden>
+      <button type="button" class="btn btn-ln" id="demo-photo">Essayer avec une photo d'exemple</button>
+      <div id="id-res"></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="groupe" id="groupe">
+<div class="wrap">
+  <div class="head"><div><div class="eyebrow">Le groupe</div><h2>Cinq sociétés, une seule recherche</h2></div></div>
+  <div class="socs">
+    <div class="s"><b>SACRI</b><span>Matériel forestier, agricole et industriel, représentant exclusif STIHL.</span></div>
+    <div class="s"><b>Trans-Roulements</b><span>Transmission, roulements et flexibles, depuis 1982.</span></div>
+    <div class="s"><b>PST-CI</b><span>Pneumatique et hydraulique : fourniture, réparation, SAV.</span></div>
+    <div class="s"><b>SAFIR</b><span>Scies à ruban, outils de coupe et affûtage pour l'industrie du bois.</span></div>
+    <div class="s"><b>DEFI</b><span>Construction métallique, tuyauterie et chaudronnerie.</span></div>
+  </div>
+</div>
+</section>
+
+<footer>
+<div class="wrap">
+  <div class="f">
+    <div><img src="logo-blanc.png" alt="SACRI"><p>Société de Commerce et de Représentation Industrielle. Fournitures industrielles et agricoles, pièces de rechange et service après-vente.</p></div>
+    <div><b>Adresse</b>Bd de Marseille, face SIVOA<br>01 BP 1604 Abidjan 01<br>Abidjan, Côte d'Ivoire</div>
+    <div><b>Contact</b>+225 21 25 48 48 / 49<br><a href="mailto:commercial@sacri-ci.com">commercial@sacri-ci.com</a><br><a href="https://www.sacri-ci.com" target="_blank" rel="noopener">www.sacri-ci.com</a></div>
+  </div>
+  <div class="legal">Page de démonstration non indexée. Articles, références (« réf. démo »), disponibilités et reconnaissance par photo fictifs. Textes du groupe et photos tirés de sacri-ci.com.</div>
+</div>
+</footer>
+
+<div class="modal" id="fiche" hidden role="dialog" aria-modal="true" aria-labelledby="m-nom">
+  <div class="bg" data-close></div>
+  <div class="box">
+    <button class="x" data-close aria-label="Fermer">×</button>
+    <div id="m-pic"></div>
+    <div class="info">
+      <span class="soc" id="m-soc"></span>
+      <h3 id="m-nom"></h3>
+      <span id="m-ref"></span>
+      <p id="m-desc"></p>
+      <p id="m-mach"></p>
+      <span class="dispo" id="m-dispo" style="align-self:flex-start"></span>
+      <button type="button" class="btn btn-wa" id="m-wa" style="margin-top:10px"><svg viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.2-.6-.4zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 4.9L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>Demander un devis sur WhatsApp</button>
+      <div class="sent" id="m-sent" hidden><b>Démonstration : rien n'a été envoyé.</b>Dans la version réelle, WhatsApp s'ouvrirait avec ce message prêt : <span id="m-msg"></span></div>
+    </div>
+  </div>
+</div>
+
+<script src="data.js?v=202611161814"></script>
+<script src="app.js?v=202611161814"></script>
+</body>
+</html>
