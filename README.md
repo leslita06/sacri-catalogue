@@ -1,2 +1,3 @@
-# sacri-catalogue
-Démonstration non publiée : catalogue intelligent de pièces (maquette, données fictives)
+# Catalogue intelligent SACRI : démonstration
+
+Maquette non publiée, non indexée. Articles, références (réf. démo), disponibilités et reconnaissance par photo fictifs.
