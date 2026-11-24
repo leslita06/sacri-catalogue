@@ -22,7 +22,7 @@
   var MACH = uniq([].concat.apply([], A.map(function (x) { return x.machines; }))).sort();
   var famIco = {}; A.forEach(function (x) { famIco[x.fam] = x.ico; });
 
-  var state = { q: '', fam: '', mach: '', soc: [], dispo: [], sort: 'pert', n: 12 };
+  var state = { q: '', fam: '', mach: '', soc: [], dispo: [], sort: 'pert', n: 24 };
   var cart = {};
   try { cart = JSON.parse(localStorage.getItem('sacri-demande') || '{}'); } catch (e) { cart = {}; }
 
@@ -54,13 +54,14 @@
     if (state.sort === 'az') r.sort(function (a, b) { return a[1].nom.localeCompare(b[1].nom, 'fr'); });
     else if (state.sort === 'dispo') r.sort(function (a, b) { return DISPO[a[1].dispo][2] - DISPO[b[1].dispo][2]; });
     else if (state.q) r.sort(function (a, b) { return b[0] - a[0]; });
+    r = r.filter(function (p) { return p[1].img; }).concat(r.filter(function (p) { return !p[1].img; }));
     if (r.length && r[0][0] >= 1000) r = r.filter(function (p) { return p[0] >= 1000; });
     return r.map(function (p) { return p[1]; });
   }
 
   function pic(x, cls) {
     return x.img ? '<img src="' + x.img + '" alt="' + esc(x.nom) + '" loading="lazy">' :
-      '<div class="ph' + (cls ? ' ' + cls : '') + '">' + ico(x.ico) + '<span>Photo à venir</span></div>';
+      '<div class="ph' + (cls ? ' ' + cls : '') + '">' + ico(x.ico) + '<span>Photo sur demande</span></div>';
   }
   function card(x, i) {
     var d = DISPO[x.dispo];
@@ -69,13 +70,13 @@
       '<div class="body"><div class="meta"><span class="soc">' + esc(x.soc) + '</span><span class="dispo ' + d[1] + '">' + d[0] + '</span></div>' +
       '<h3>' + esc(x.nom) + '</h3><p class="ref">Réf. ' + x.id + '</p>' +
       (x.machines.length ? '<p class="mach">' + ico('check') + '<span>' + esc(x.machines.slice(0, 3).join(', ')) + (x.machines.length > 3 ? '…' : '') + '</span></p>' : '') +
-      '<button type="button" class="add' + (cart[x.id] ? ' in' : '') + '" data-add="' + x.id + '">' + ico(cart[x.id] ? 'check' : 'plus') + (cart[x.id] ? 'Dans ma demande' : 'Ajouter à ma demande') + '</button>' +
+      '<button type="button" class="add' + (cart[x.id] ? ' in' : '') + '" data-add="' + x.id + '" aria-label="' + (cart[x.id] ? 'Devis demandé' : 'Demander un devis') + ' pour ' + esc(x.nom) + '">' + ico(cart[x.id] ? 'check' : 'plus') + '<span class="l">' + (cart[x.id] ? 'Devis demandé' : 'Demander un devis') + '</span><span class="s">Devis</span></button>' +
       '</div></article>';
   }
 
   function render() {
     var r = filtered();
-    $('#count').textContent = r.length + (r.length > 1 ? ' articles' : ' article');
+    $('#count').textContent = r.length + (r.length > 1 ? ' références de l\'échantillon' : ' référence de l\'échantillon');
     $('#rtitle').textContent = state.fam || (state.q ? 'Résultats pour « ' + state.q + ' »' : 'Toutes les pièces');
     var shown = r.slice(0, state.n), more = $('#more');
     more.hidden = r.length <= state.n;
@@ -93,15 +94,23 @@
     $$('.fam').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-f') === state.fam); });
     $('#f-mach').value = state.mach;
     $$('#f-soc input').forEach(function (c) { c.checked = state.soc.indexOf(c.value) > -1; });
+    $$('.sq').forEach(function (b) { var v = b.getAttribute('data-s'); b.classList.toggle('on', v ? (state.soc.length === 1 && state.soc[0] === v) : !state.soc.length); });
     $$('#f-dispo input').forEach(function (c) { c.checked = state.dispo.indexOf(c.value) > -1; });
   }
-  function go() { state.n = 12; render(); }
+  function go() { state.n = 24; render(); }
 
   /* Familles avec icônes */
   $('#fams').innerHTML = '<button type="button" class="fam" data-f="">' + ico('list') + 'Tout<small>' + A.length + '</small></button>' +
     FAMS.map(function (f) { return '<button type="button" class="fam" data-f="' + esc(f) + '">' + ico(famIco[f]) + esc(f) + '<small>' + A.filter(function (x) { return x.fam === f; }).length + '</small></button>'; }).join('');
   $('#fams').addEventListener('click', function (e) { var b = e.target.closest('.fam'); if (!b) return; state.fam = b.getAttribute('data-f'); go(); $('#catalogue').scrollIntoView({ behavior: 'smooth' }); });
 
+  /* Sociétés en accès direct (barre du haut) */
+  var sq = $('#socq');
+  if (sq) {
+    sq.innerHTML = '<button type="button" class="sq on" data-s="">Toutes</button>' + SOCS.map(function (v) { return '<button type="button" class="sq" data-s="' + esc(v) + '">' + esc(v) + '</button>'; }).join('');
+    sq.addEventListener('click', function (e) { var b = e.target.closest('.sq'); if (!b) return; var v = b.getAttribute('data-s'); state.soc = v ? [v] : []; go(); });
+  }
+  var nTot = $('#n-ech'); if (nTot) nTot.textContent = A.length;
   /* Filtres */
   $('#f-mach').innerHTML = '<option value="">Toutes les machines</option>' + MACH.map(function (m) { return '<option>' + esc(m) + '</option>'; }).join('');
   $('#f-mach').addEventListener('change', function () { state.mach = this.value; go(); });
@@ -130,7 +139,7 @@
   /* Recherche */
   var inp = $('#q');
   inp.addEventListener('input', function () { state.q = inp.value.trim(); go(); });
-  $('#more').addEventListener('click', function () { state.n += 12; render(); });
+  $('#more').addEventListener('click', function () { state.n += 24; render(); });
   $('#search').addEventListener('submit', function (e) { e.preventDefault(); state.q = inp.value.trim(); go(); $('#catalogue').scrollIntoView({ behavior: 'smooth' }); });
   $$('.ex').forEach(function (b) { b.addEventListener('click', function () { inp.value = b.textContent.trim(); state.q = inp.value; go(); $('#catalogue').scrollIntoView({ behavior: 'smooth' }); }); });
 
@@ -138,10 +147,19 @@
   function save() { try { localStorage.setItem('sacri-demande', JSON.stringify(cart)); } catch (e) {} }
   function toast(t) { var el = $('#toast'); el.innerHTML = ico('check') + esc(t); el.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(function () { el.hidden = true; }, 2200); }
   function count() { var n = 0; for (var k in cart) n += cart[k]; $('#cart-n').textContent = n; return n; }
+  /* Chaque demande de devis est consignée pour le tableau commercial (même navigateur, clé sacri-devis-demandes) */
+  function logDevis(id) {
+    try {
+      var x = byId[id], L = JSON.parse(localStorage.getItem('sacri-devis-demandes') || '[]');
+      L.push({ ref: id, article: x.nom, societe: x.soc, famille: x.fam, machines: x.machines, date: new Date().toISOString(), source: 'catalogue', statut: 'à traiter' });
+      localStorage.setItem('sacri-devis-demandes', JSON.stringify(L.slice(-500)));
+    } catch (e) {}
+  }
   function add(id) {
+    if (!cart[id]) logDevis(id);
     cart[id] = (cart[id] || 0) + (cart[id] ? 0 : 1); save(); count();
     $('#cart-open').classList.remove('bump'); void $('#cart-open').offsetWidth; $('#cart-open').classList.add('bump');
-    toast('Ajouté à votre demande de devis'); render(); if (!$('#fiche').hidden) open(id);
+    toast('Demande de devis enregistrée'); render(); if (!$('#fiche').hidden) open(id);
   }
   function message() {
     var l = Object.keys(cart).map(function (id) { return '- ' + cart[id] + ' x ' + byId[id].nom + ' (réf. ' + id + ')'; });
@@ -185,7 +203,7 @@
     if (x.machines.length) sp.splice(2, 0, ['Compatible avec', esc(x.machines.join(', '))]);
     if (x.cm) sp.splice(2, 0, ['Longueur', x.cm + ' cm']);
     $('#m-specs').innerHTML = sp.map(function (s) { return '<li><span>' + s[0] + '</span><b>' + (s[0] === 'Disponibilité' || s[0] === 'Compatible avec' ? s[1] : esc(s[1])) + '</b></li>'; }).join('');
-    $('#m-add').innerHTML = ico(cart[id] ? 'check' : 'plus') + '<span>' + (cart[id] ? 'Dans ma demande' : 'Ajouter à ma demande') + '</span>';
+    $('#m-add').innerHTML = ico(cart[id] ? 'check' : 'plus') + '<span>' + (cart[id] ? 'Devis demandé' : 'Demander un devis') + '</span>';
     $('#m-add').setAttribute('data-id', id); $('#m-wa').setAttribute('data-id', id);
     $('#m-sent').hidden = true;
     var rel = (x.rel || []).map(function (r) { return byId[r]; }).filter(Boolean);

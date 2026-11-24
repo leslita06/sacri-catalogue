@@ -54,9 +54,10 @@ header nav a:hover{color:var(--o)}
 
 /* Familles */
 .fams-sec{background:var(--bg);border-bottom:1px solid var(--line)}
-.fams{display:flex;gap:10px;overflow-x:auto;padding:18px 0;scrollbar-width:thin}
-.fam{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:108px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px 8px;font-size:13px;font-weight:600;color:var(--ink2);text-align:center;line-height:1.25;transition:border-color .2s,transform .2s}
-.fam svg{width:26px;height:26px;color:var(--o)}
+.fams{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding:8px 0 22px}
+.fam{display:flex;flex-direction:row;align-items:center;gap:10px;min-width:0;text-align:left!important;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px 8px;font-size:13px;font-weight:600;color:var(--ink2);text-align:center;line-height:1.25;transition:border-color .2s,transform .2s}
+.fam svg{width:22px;height:22px;color:var(--o);flex:none}
+.fam small{margin-left:auto}
 .fam small{font-weight:500;color:var(--g)}
 .fam:hover{transform:translateY(-2px);border-color:#d6d2cc}
 .fam.on{border-color:var(--o);background:var(--o-l);color:var(--ink)}
@@ -86,11 +87,11 @@ header nav a:hover{color:var(--o)}
 .tagf{display:inline-flex;align-items:center;gap:6px;background:var(--o-l);color:var(--o2);border:0;border-radius:99px;padding:6px 10px 6px 12px;font-size:13px;font-weight:600}
 .tagf svg{width:14px;height:14px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
-.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s;animation:fade .35s both}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s}
 .card:hover,.card:focus-visible{transform:translateY(-3px);box-shadow:0 14px 30px rgba(29,28,27,.1);outline:0}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}}
-.pic{aspect-ratio:4/3;background:#fff;display:grid;place-items:center;border-bottom:1px solid var(--line);position:relative}
-.pic img{width:100%;height:100%;object-fit:contain;padding:10px}
+.pic{aspect-ratio:1/1;background:#fff;display:grid;place-items:center;border-bottom:1px solid var(--line);position:relative}
+.pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:14%;box-sizing:border-box}
 .pic .badge{position:absolute;top:10px;left:10px;display:flex;align-items:center;gap:5px;background:#fff;border:1px solid var(--line);border-radius:99px;padding:3px 9px 3px 6px;font-size:12px;font-weight:600;color:var(--ink2)}
 .pic .badge svg{width:15px;height:15px;color:var(--o)}
 .ph{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--g);font-size:13px;width:100%;height:100%;justify-content:center;background:var(--bg)}
@@ -101,13 +102,16 @@ header nav a:hover{color:var(--o)}
 .dispo{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;white-space:nowrap}
 .dispo::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
 .dispo.ok{color:var(--ok)}.dispo.low{color:var(--low)}.dispo.cmd{color:var(--cmd)}.dispo.svc{color:var(--g)}
-.card h3{font-size:16px;line-height:1.3}
+.card h3{font-size:16px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.6em}
 .ref{font-size:12px;color:var(--g)}
-.mach{font-size:13px;color:var(--ink2);display:flex;gap:6px;align-items:flex-start}
+.mach{font-size:13px;color:var(--ink2);display:flex;gap:6px;align-items:flex-start;min-width:0}
+.mach span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .mach svg{width:15px;height:15px;color:var(--o);margin-top:2px}
-.card .add{margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--o);font-weight:600;font-size:14px;padding-top:6px}
+.card .add{margin-top:auto;align-self:stretch;display:flex;justify-content:center;align-items:center;gap:6px;background:var(--ink);border:0;border-radius:10px;color:#fff;font-weight:600;font-size:14px;padding:10px 12px;white-space:nowrap;transition:background .2s}
+.card .add:hover{background:var(--o2)}
+.card .add .s{display:none}
 .card .add svg{width:16px;height:16px}
-.card .add.in{color:var(--ok)}
+.card .add.in{background:#E7F4EC;color:var(--ok)}
 .empty{grid-column:1/-1;background:var(--bg);border-radius:var(--r);padding:32px;text-align:center}
 .empty b{display:block;font-size:18px;margin-bottom:6px}
 .more-w{text-align:center;margin-top:26px}
@@ -266,4 +270,13 @@ footer{background:var(--ink);color:#BEBAB5;padding:56px 0 28px;font-size:14px}
   .cart-btn .lbl{display:none}
   .ident{padding:52px 0}
 }
+.counter{display:inline-flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:10px 16px;margin-bottom:22px;font-size:14px;color:#D9D6D2}
+.counter b{color:#fff;font-size:16px}
+.counter strong{color:#fff}
+.socq-w{display:flex;align-items:center;gap:12px;padding:18px 0 10px;flex-wrap:wrap}
+.socq-w .flbl{font-size:13px;font-weight:700;color:var(--ink2);margin:0}
+.socq{display:flex;flex-wrap:wrap;gap:8px}
+.sq{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:7px 14px;font-size:13px;font-weight:600;color:var(--ink2)}
+.sq.on{border-color:var(--ink);background:var(--ink);color:#fff}
+@media (max-width:560px){.card .add .l{display:none}.card .add .s{display:inline}.card .add{font-size:13px;padding:9px 8px}.fams{grid-template-columns:1fr 1fr;gap:8px}.fam{padding:10px 8px;font-size:12px;gap:6px}.fam svg{width:18px;height:18px}.socq{flex-wrap:nowrap;overflow-x:auto;max-width:100%}.socq-w{flex-wrap:nowrap}.sq{white-space:nowrap}.counter{font-size:13px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
