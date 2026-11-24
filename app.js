@@ -1,4 +1,4 @@
-/* Catalogue SACRI v6. Données de démonstration. Aucune donnée n'est envoyée : devis préparés sur l'appareil. */
+/* Catalogue SACRI v7. Données de démonstration. Aucune donnée n'est envoyée : devis préparés sur l'appareil. */
 (function () {
   'use strict';
   var A = window.ARTICLES || [], M = window.MACHINES || [], TYPES = window.TYPES || [];
@@ -169,12 +169,12 @@
 
   /* ---------- Composants ---------- */
   function pic(x, cls) {
-    return x.img ? '<img src="' + x.img + '" alt="' + esc(x.nom) + '" loading="lazy" decoding="async">' :
+    return x.img ? '<img class="fit-' + (x.fit || 'contain') + '" src="' + x.img + '" alt="' + esc(x.nom) + '" loading="lazy" decoding="async">' :
       '<div class="ph' + (cls ? ' ' + cls : '') + '">' + ico(x.ico) + '</div>';
   }
   function card(x) {
     var mm = x.machines.map(function (c) { return byCode[c] ? byCode[c].code : c; });
-    return '<article class="card">' +
+    return '<article class="card' + (x.fit === 'cover' ? ' cov' : '') + '">' +
       '<a class="pic" href="#/article/' + x.id + '" aria-label="' + esc(x.nom) + '">' + pic(x) + '</a>' +
       '<div class="body"><div class="meta"><span class="soc">' + esc(x.soc) + '</span>' + dispoLbl(x.dispo) + '</div>' +
       '<h3><a href="#/article/' + x.id + '">' + esc(x.nom) + '</a></h3><p class="ref">Réf. ' + x.id + '</p>' +
@@ -212,7 +212,7 @@
   function qsOf(o) { var a = []; Object.keys(o).forEach(function (k) { if (o[k] !== '' && o[k] != null && !(Array.isArray(o[k]) && !o[k].length)) a.push(encodeURIComponent(k) + '=' + encodeURIComponent(Array.isArray(o[k]) ? o[k].join(',') : o[k]).replace(/%20/g, '+').replace(/%2C/g, ',')); }); return a.length ? '?' + a.join('&') : ''; }
   function go(h, replace) { if (replace) { history.replaceState(null, '', h); render(); } else location.hash = h; }
   function render() {
-    var prev = route; route = parseHash();
+    var prev = route; route = parseHash(); close3d();
     $$('[data-nav]').forEach(function (a) { var n = a.getAttribute('data-nav'); a.classList.toggle('on', n === route.name || (n === 'machines' && route.name === 'machine') || (n === 'catalogue' && route.name === 'article')); });
     closeSugg();
     var keepScroll = prev.name === 'catalogue' && route.name === 'catalogue';
@@ -227,30 +227,43 @@
     if (r !== 'catalogue') { var qi = $('#q'); if (qi && document.activeElement !== qi) { qi.value = ''; $('#qclear').hidden = true; } }
     if (!keepScroll && !(r === 'machine' && route.seg[2] === 'eclate' && prev.name === 'machine' && prev.seg[2] === 'eclate')) window.scrollTo(0, 0);
     document.title = (route.title ? route.title + ' · ' : '') + 'Catalogue SACRI';
+    document.body.classList.toggle('r-home', r === 'home');
   }
 
   /* ---------- Accueil ---------- */
+  var FAM_IMG = { 'Forestier et agricole': 'agri', 'Espaces verts': 'ev', 'Lavage et nettoyage': 'lavage', 'Lubrifiants': 'lub', 'Flexibles et raccords': 'flex',
+    'Transmission et roulements': 'trans', 'Pneumatique et hydraulique': 'pneu', 'Sécurité et EPI': 'epi', 'Levage': 'levage', 'Outillage': 'outillage',
+    'Outils de coupe': 'coupe', 'Construction métallique': 'metal' };
+  var TOP = ['Chaîne de tronçonneuse, guide 63 cm', 'Bougie d’allumage pour moteur 2 temps', 'Filtre à air de tronçonneuse', 'Huile 2 temps pour mélange', 'Fil nylon de coupe 2,4 mm', 'Huile de chaîne de tronçonneuse'];
+  var MARQ = ['STIHL', 'Beta', 'Flexibles', '77 Lubricants', 'Hitachi', 'Briggs and Stratton', 'Lemaitre', 'EPI', 'Parker', 'Castelgarden', 'Ergos', 'NTN SNR', 'Optibelt', 'JSP', 'Sauer Danfoss', 'FAIP', 'Hi-Force'];
   function renderHome() {
     route.title = '';
-    var fams = FAMS.map(function (f) { var n = A.filter(function (x) { return x.fam === f; }).length; return '<a class="fam" href="#/catalogue' + qsOf({ fam: f }) + '">' + ico(famIco[f]) + '<span>' + esc(f) + '</span><small>' + n + '</small></a>'; }).join('');
+    var fams = FAMS.map(function (f) { var n = A.filter(function (x) { return x.fam === f; }).length; return '<a class="ftile" href="#/catalogue' + qsOf({ fam: f }) + '"><span class="ft-img"><img src="img/fam-' + (FAM_IMG[f] || 'agri') + '.jpg" alt="" loading="lazy" decoding="async"></span><span class="ft-t"><b>' + esc(f) + '</b><small>' + n + ' article' + (n > 1 ? 's' : '') + '</small></span></a>'; }).join('');
+    var top = TOP.map(byName).filter(Boolean);
     app.innerHTML =
-      '<section class="hero"><div class="wrap"><p class="eyebrow">Groupe SACRI, Abidjan</p>' +
+      '<section class="hero2"><img class="h2-img" src="img/hero-ms.jpg" alt="Tronçonneuse STIHL posée sur un tronc" fetchpriority="high"><div class="h2-shade"></div><div class="wrap h2-in">' +
+      '<p class="eyebrow">Groupe SACRI, Abidjan · Représentant exclusif STIHL en Côte d’Ivoire</p>' +
       '<h1>La bonne pièce, <em>trouvée en quelques secondes.</em></h1>' +
-      '<p class="lead">Cherchez par référence, par machine ou en décrivant votre besoin. Ajoutez les pièces à votre liste et envoyez la demande de devis en un geste.</p>' +
+      '<p class="lead">Par référence, par machine ou en décrivant votre besoin. Ajoutez les pièces à votre liste, envoyez la demande de devis en un geste.</p>' +
       '<form class="search big" id="hero-search" role="search" autocomplete="off"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>' +
       '<input id="hq" type="search" placeholder="Ex. chaîne MS 661, huile 2 temps, SC-0032" aria-label="Rechercher une pièce" enterkeyhint="search"><button type="submit">Rechercher</button><div class="sugg" id="hsugg" role="listbox" hidden></div></form>' +
       '<div class="examples"><span>Essayez :</span>' + ['chaîne MS 661', 'huile 2 temps', 'filtre FS 400', 'tronsoneuse', 'SC-0032'].map(function (e) { return '<a class="ex" href="#/catalogue' + qsOf({ q: e }) + '">' + esc(e) + '</a>'; }).join('') + '</div>' +
       '</div></section>' +
+      '<section class="reas" aria-label="Nos engagements"><div class="wrap reas-in">' +
+      [['shield', 'Pièces d’origine', 'Représentant exclusif STIHL'], ['wrench', 'Atelier et SAV', 'Techniciens qualifiés'], ['clock', 'Depuis 1985', 'À Abidjan'], ['check', 'Certifiée ISO 9001', 'Société SACRI']]
+        .map(function (r) { return '<div class="r">' + ico(r[0]) + '<span><b>' + r[1] + '</b><small>' + r[2] + '</small></span></div>'; }).join('') + '</div></section>' +
       '<div class="wrap">' +
-      '<section class="blk tools"><a class="tool" href="#/machines">' + ico('saw') + '<span><b>Par machine</b><small>Choisissez votre machine, voyez toutes ses pièces</small></span>' + ico('chev', 'go') + '</a>' +
+      '<section class="blk"><div class="bh"><h2>Familles de produits</h2><a class="lnk" href="#/catalogue">Tout le catalogue</a></div><div class="ftiles">' + fams + '</div></section>' +
+      '<section class="blk"><div class="bh"><h2>Les plus demandées</h2><a class="lnk" href="#/catalogue">Voir tout</a></div><div class="grid top6">' + top.map(card).join('') + '</div></section>' +
+      '<section class="blk"><div class="bh"><h2>Trouvez par machine</h2><a class="lnk" href="#/machines">Toutes les machines</a></div>' +
+      '<label class="msel"><span>Ma machine</span><select id="home-mach"><option value="">Choisir une machine STIHL</option>' + M.map(function (m) { return '<option value="' + m.slug + '">' + esc(m.nom) + ' · ' + esc(m.type) + '</option>'; }).join('') + '</select></label>' +
+      '<div class="mgrid">' + M.slice(0, 5).map(function (m) { return machCard(m); }).join('') + '</div></section>' +
+      '<section class="blk tools"><a class="tool" href="#/machine/ms661">' + ico('box') + '<span><b>Voir en 3D</b><small>La MS 661 et ses pièces d’usure</small></span>' + ico('chev', 'go') + '</a>' +
       '<a class="tool" href="#/machine/ms661/eclate">' + ico('explode') + '<span><b>Vue éclatée</b><small>Touchez une pièce de la tronçonneuse</small></span>' + ico('chev', 'go') + '</a>' +
       '<a class="tool" href="#/comparer">' + ico('cols') + '<span><b>Comparer</b><small>2 ou 3 machines côte à côte</small></span>' + ico('chev', 'go') + '</a>' +
       '<a class="tool" href="#/devis">' + ico('file') + '<span><b>Mon devis</b><small>WhatsApp, e-mail ou PDF</small></span>' + ico('chev', 'go') + '</a></section>' +
       seenBlock() +
-      '<section class="blk"><div class="bh"><h2>Trouvez par machine</h2><a class="lnk" href="#/machines">Toutes les machines</a></div>' +
-      '<label class="msel"><span>Ma machine</span><select id="home-mach"><option value="">Choisir une machine STIHL</option>' + M.map(function (m) { return '<option value="' + m.slug + '">' + esc(m.nom) + ' · ' + esc(m.type) + '</option>'; }).join('') + '</select></label>' +
-      '<div class="mgrid">' + M.slice(0, 5).map(function (m) { return machCard(m); }).join('') + '</div></section>' +
-      '<section class="blk"><div class="bh"><h2>Familles de produits</h2><a class="lnk" href="#/catalogue">Tout le catalogue</a></div><div class="fams">' + fams + '</div></section>' +
+      '<section class="blk brands"><div class="bh"><h2>Les marques distribuées</h2></div><ul class="logos">' + MARQ.map(function (n, i) { return '<li><img src="img/marques/m' + (i < 10 ? '0' : '') + i + '.png" alt="' + esc(n) + '" loading="lazy"></li>'; }).join('') + '</ul></section>' +
       '<section class="blk groupe"><div class="bh"><h2>Cinq sociétés, une seule recherche</h2></div><div class="socs">' +
       [['tree', 'SACRI', 'Matériel forestier, agricole et industriel. Représentant exclusif STIHL.'], ['gear', 'Trans-Roulements', 'Transmission, roulements et flexibles.'], ['gauge', 'PST-CI', 'Pneumatique et hydraulique : fourniture, réparation, SAV.'], ['blade', 'SAFIR', 'Scies à ruban, outils de coupe et affûtage pour le bois.'], ['beam', 'DEFI', 'Construction métallique, tuyauterie et chaudronnerie.']]
         .map(function (s) { return '<a class="s" href="#/catalogue' + qsOf({ soc: s[1] }) + '">' + ico(s[0]) + '<b>' + s[1] + '</b><span>' + s[2] + '</span></a>'; }).join('') + '</div></section></div>';
@@ -340,7 +353,7 @@
       '<div class="a-buy"><div class="slot" data-slot="' + x.id + '" data-big>' + qtyCtl(x.id, true) + '</div>' +
       '<a class="btn btn-wa" target="_blank" rel="noopener" href="https://wa.me/?text=' + encodeURIComponent('Bonjour SACRI, je souhaite un devis pour : ' + x.nom + ' (réf. ' + x.id + ').\n' + location.href.split('#')[0] + '#/article/' + x.id) + '">' + ico('chat') + 'Demander sur WhatsApp</a></div>' +
       '<p class="muted sm">Prix sur devis. Un conseiller SACRI confirme la compatibilité avant toute commande.</p>' +
-      (m ? '<div class="a-mach"><a class="btn" href="#/machine/' + m.slug + '">' + ico('list') + 'Voir les ' + parts(m.code).length + ' pièces compatibles</a>' + (m.eclate ? '<a class="btn-ln" href="#/machine/' + m.slug + '/eclate">' + ico('explode') + 'Vue éclatée</a>' : '') + '</div>' : '') +
+      (m ? '<div class="a-mach"><a class="btn" href="#/machine/' + m.slug + '">' + ico('list') + 'Voir les ' + parts(m.code).length + ' pièces compatibles</a>' + (m.eclate ? '<a class="btn-ln" href="#/machine/' + m.slug + '/eclate">' + ico('explode') + 'Vue éclatée</a>' : '') + (m.d3 ? '<a class="btn-ln" href="#/machine/' + m.slug + '?vue=3d">' + ico('box') + 'Voir en 3D</a>' : '') + '</div>' : '') +
       '</div></div>' +
       '<div class="a-cols"><section class="blk"><h2>Caractéristiques techniques</h2><table class="specs"><tbody>' + specs.map(function (s) { return '<tr><th scope="row">' + esc(s[0]) + '</th><td>' + esc(s[1]) + '</td></tr>'; }).join('') + '</tbody></table>' +
       (m ? '<p class="muted sm">Caractéristiques relevées sur la fiche STIHL du modèle.</p>' : '') + '</section>' +
@@ -362,28 +375,59 @@
       '<div class="cat-h"><h1>Trouvez les pièces de votre machine</h1><p class="count">' + M.length + ' machines STIHL. Choisissez la vôtre pour voir toutes ses pièces et consommables, rangés par type.</p></div>' +
       '<div class="mgrid all">' + M.map(function (m) { return machCard(m, true); }).join('') + '</div>' + cmpBar() + '</div>';
   }
+  var USURE = ['Chaîne', 'Guide-chaîne', 'Bougie', 'Filtre', 'Pignon', 'Lanceur', 'Outil de coupe', 'Lame'];
   function renderMachine(slug) {
     var m = bySlug[slug];
     if (!m) { app.innerHTML = '<div class="wrap page"><div class="empty"><b>Machine introuvable.</b><p><a href="#/machines">Voir les machines</a></p></div></div>'; return; }
     route.title = m.nom;
     var ps = parts(m.code), groups = TYPES.map(function (t) { return [t, ps.filter(function (x) { return x.type === t; })]; }).filter(function (g) { return g[1].length; });
     var other = ps.filter(function (x) { return TYPES.indexOf(x.type) < 0; }); if (other.length) groups.push(['Autres', other]);
-    var mart = byId[m.id];
+    var mart = byId[m.id], gal = (m.gal && m.gal.length ? m.gal : (m.img ? [m.img] : []));
+    var usure = []; USURE.forEach(function (t) { var y = ps.filter(function (x) { return x.type === t; })[0]; if (y && usure.length < 4) usure.push(y); });
+    var rel = (mart.rel || []).map(function (r) { return byId[r]; }).filter(function (y) { return y && usure.indexOf(y) < 0; }).slice(0, 4);
+    var specs = [['Type', m.type], ['Énergie', m.energie]].concat(m.specs).concat([['Usage', m.usage], ['Référence', m.id], ['Prix', 'Sur devis']]);
     app.innerHTML = '<div class="wrap page">' + crumbs([['Accueil', '#/'], ['Machines', '#/machines'], [m.nom, '']]) +
-      '<div class="m-head"><div class="m-img">' + (m.img ? '<img src="' + m.img + '" alt="' + esc(m.nom) + '">' : '') + '</div>' +
+      '<div class="m-head2"><div class="gal">' +
+      '<div class="gal-main" id="gal-main">' + (gal[0] ? '<img src="' + gal[0] + '" alt="' + esc(m.nom) + '">' : '') +
+      (m.d3 ? '<button type="button" class="b3d" data-3d>' + ico('box') + 'Voir en 3D</button>' : '') + '</div>' +
+      (gal.length > 1 ? '<div class="gal-th" role="list">' + gal.map(function (g, i) { return '<button type="button" role="listitem" class="' + (i ? '' : 'on') + '" data-gal="' + g + '" aria-label="Vue ' + (i + 1) + ' sur ' + gal.length + '"><img src="' + g + '" alt="" loading="lazy"></button>'; }).join('') +
+      (m.d3 ? '<button type="button" class="th3d" data-3d aria-label="Voir en 3D">' + ico('box') + '<span>3D</span></button>' : '') + '</div>' : '') +
+      (gal.length > 1 ? '<p class="credit">Photos : STIHL (fiche produit) et sacri-ci.com.</p>' : '') + '</div>' +
       '<div class="m-txt"><p class="soc">' + esc(m.type) + '</p><h1>' + esc(m.nom) + '</h1><p class="a-desc">' + esc(m.usage) + '</p>' +
-      '<ul class="kv">' + m.specs.slice(0, 4).map(function (s) { return '<li><span>' + esc(s[0]) + '</span><b>' + esc(s[1]) + '</b></li>'; }).join('') + '</ul>' +
-      '<div class="m-act">' + (m.eclate ? '<a class="btn" href="#/machine/' + m.slug + '/eclate">' + ico('explode') + 'Vue éclatée cliquable</a>' : '') +
-      '<a class="btn-ln" href="#/article/' + m.id + '">' + ico('file') + 'Fiche de la machine</a>' +
-      '<a class="btn-ln" href="#/comparer' + qsOf({ m: [m.slug].concat(M.filter(function (o) { return o.type === m.type && o.slug !== m.slug; }).slice(0, 1).map(function (o) { return o.slug; })) }) + '">' + ico('cols') + 'Comparer</a></div>' +
-      '<div class="slot inl" data-slot="' + mart.id + '">' + qtyCtl(mart.id) + '</div></div></div>' +
+      '<p class="price">Prix sur devis · ' + dispoLbl(mart.dispo) + '</p>' +
+      '<div class="slot inl" data-slot="' + mart.id + '" data-big>' + qtyCtl(mart.id, true) + '</div>' +
+      '<div class="m-act">' + (m.d3 ? '<button type="button" class="btn-ln" data-3d>' + ico('box') + 'Voir en 3D</button>' : '') +
+      (m.eclate ? '<a class="btn-ln" href="#/machine/' + m.slug + '/eclate">' + ico('explode') + 'Vue éclatée</a>' : '') +
+      '<a class="btn-ln" href="#/comparer' + qsOf({ m: [m.slug].concat(M.filter(function (o) { return o.type === m.type && o.slug !== m.slug; }).slice(0, 1).map(function (o) { return o.slug; })) }) + '">' + ico('cols') + 'Comparer</a>' +
+      '<a class="btn-ln" href="#/article/' + m.id + '">' + ico('file') + 'Fiche et PDF</a></div>' +
+      '<table class="specs m-specs"><caption>Caractéristiques</caption><tbody>' + specs.map(function (s) { return '<tr><th scope="row">' + esc(s[0]) + '</th><td>' + esc(s[1]) + '</td></tr>'; }).join('') + '</tbody></table>' +
+      (m.docs.length ? '<p class="muted sm">Relevées sur la fiche STIHL du modèle : ' + m.docs.map(function (d) { return '<a href="' + d[1] + '" target="_blank" rel="noopener">' + esc(d[0]) + '</a>'; }).join(', ') + '.</p>' : '') +
+      '</div></div>' +
+      (usure.length ? '<section class="blk usure"><div class="bh"><h2>' + ico('wrench') + 'Pièces d’usure à prévoir</h2><span class="muted sm">À garder en stock pour ne pas arrêter le chantier</span></div><div class="grid u4">' + usure.map(card).join('') + '</div></section>' : '') +
+      (rel.length ? '<section class="blk"><div class="bh"><h2>Souvent commandé ensemble</h2></div><div class="grid u4">' + rel.map(card).join('') + '</div></section>' : '') +
       '<label class="msel"><span>Changer de machine</span><select id="mach-sw">' + M.map(function (o) { return '<option value="' + o.slug + '"' + (o.slug === m.slug ? ' selected' : '') + '>' + esc(o.nom) + '</option>'; }).join('') + '</select></label>' +
       '<section class="blk"><div class="bh"><h2>' + ps.length + ' pièces et consommables compatibles</h2><a class="lnk" href="#/catalogue' + qsOf({ mach: m.code }) + '">Filtrer dans le catalogue</a></div>' +
       '<div class="tjump">' + groups.map(function (g) { return '<a href="#/machine/' + m.slug + '" data-jump="t-' + norm(g[0]).replace(/ /g, '-') + '">' + ico(TYPE_ICO[g[0]] || 'box') + esc(g[0]) + '<small>' + g[1].length + '</small></a>'; }).join('') + '</div>' +
       groups.map(function (g) { return '<div class="tgroup" id="t-' + norm(g[0]).replace(/ /g, '-') + '"><h3>' + ico(TYPE_ICO[g[0]] || 'box') + esc(g[0]) + '</h3><div class="lgrid">' + g[1].map(row).join('') + '</div></div>'; }).join('') +
       (ps.length ? '' : '<p class="muted">Aucune pièce de cet échantillon n’est encore rattachée à cette machine. Demandez-la dans votre devis.</p>') + '</section></div>';
     $('#mach-sw').addEventListener('change', function () { go('#/machine/' + this.value); });
+    if (route.p.vue === '3d' && m.d3) open3d(m);
   }
+  /* ---------- Vue 3D intégrée (model-viewer chargé à la demande) ---------- */
+  var mvLoaded = false;
+  function open3d(m) {
+    if (!m.d3) return;
+    if (!mvLoaded) { var sc = document.createElement('script'); sc.type = 'module'; sc.src = 'https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js'; document.head.appendChild(sc); mvLoaded = true; }
+    var d = document.createElement('div'); d.className = 'm3d'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-label', 'Vue 3D, ' + m.nom);
+    d.innerHTML = '<div class="m3d-box"><div class="m3d-h"><div><p class="eyebrow">Vue 3D</p><b>' + esc(m.type) + '</b></div><button type="button" class="m3d-x" data-3d-close aria-label="Fermer la vue 3D">' + ico('x') + '</button></div>' +
+      '<model-viewer src="' + m.d3.glb + '" ios-src="' + m.d3.usdz + '" alt="' + esc(m.type) + ' en 3D" camera-controls touch-action="pan-y" interaction-prompt="none" environment-image="neutral" exposure="1.05" shadow-intensity="1" camera-orbit="300deg 66deg auto" ar ar-modes="webxr scene-viewer quick-look" ar-placement="floor" loading="eager"></model-viewer>' +
+      '<div class="m3d-f"><span>Glissez pour tourner, pincez pour zoomer. Sur téléphone : posez-la chez vous en réalité augmentée.</span>' +
+      '<div class="m3d-act"><a class="btn-ln" href="#/machine/' + m.slug + '/eclate" data-3d-close>' + ico('explode') + 'Pièces d’usure (vue éclatée)</a><button type="button" class="btn" data-add="' + m.id + '">' + ico('plus') + 'Ajouter au devis</button></div>' +
+      '<p class="credit">' + esc(m.d3.credit) + ' <a href="' + m.d3.url + '" target="_blank" rel="noopener">Source</a>. Modèle illustratif, non contractuel.</p></div></div>';
+    document.body.appendChild(d); document.body.classList.add('lock');
+    var x = d.querySelector('.m3d-x'); if (x) x.focus();
+  }
+  function close3d() { var d = $('.m3d'); if (d) d.remove(); document.body.classList.remove('lock'); }
 
   /* ---------- Vue éclatée (tronçonneuse, dessin sans marque) ---------- */
   var byName = function (n) { return A.filter(function (x) { return x.nom === n; })[0]; };
@@ -442,7 +486,7 @@
     route.title = 'Vue éclatée ' + m.nom;
     var sel = route.p.p && EC.some(function (p) { return p.k === route.p.p; }) ? route.p.p : '';
     app.innerHTML = '<div class="wrap page">' + crumbs([['Accueil', '#/'], ['Machines', '#/machines'], [m.nom, '#/machine/' + m.slug], ['Vue éclatée', '']]) +
-      '<div class="cat-h"><h1>Vue éclatée : ' + esc(m.nom) + '</h1><p class="count">Touchez une pièce du dessin ou de la liste pour trouver la référence et l’ajouter au devis.</p></div>' +
+      '<div class="cat-h"><h1>Vue éclatée : ' + esc(m.nom) + '</h1><p class="count">Touchez une pièce du dessin ou de la liste pour trouver la référence et l’ajouter au devis.' + (m.d3 ? ' <a class="lnk" href="#/machine/' + m.slug + '?vue=3d">' + ico('box') + 'Voir aussi en 3D</a>' : '') + '</p></div>' +
       '<div class="ecl-grid"><div class="ecl-wrap">' + eclateSVG() + '<p class="muted sm">Dessin simplifié, non contractuel, pour repérer les pièces d’usure courantes.</p></div>' +
       '<div class="ecl-side"><div class="ecl-panel" id="ecl-panel" aria-live="polite"></div>' +
       '<ol class="ecl-list">' + EC.map(function (p, i) { return '<li><button type="button" data-ek="' + p.k + '"><span class="n">' + (i + 1) + '</span>' + esc(p.lab) + ico('chev') + '</button></li>'; }).join('') + '</ol></div></div></div>';
@@ -656,6 +700,10 @@
   /* ---------- Délégation des clics ---------- */
   document.addEventListener('click', function (e) {
     var t = e.target, b;
+    if ((b = t.closest('[data-3d-close]'))) { close3d(); if (b.tagName !== 'A') return; }
+    if (t.classList && t.classList.contains('m3d')) { close3d(); return; }
+    if ((b = t.closest('[data-3d]'))) { var mm = bySlug[route.seg[1]]; if (mm) open3d(mm); return; }
+    if ((b = t.closest('[data-gal]'))) { var gm = $('#gal-main img'); if (gm) gm.src = b.getAttribute('data-gal'); $$('[data-gal]').forEach(function (g) { g.classList.toggle('on', g === b); }); return; }
     if ((b = t.closest('[data-add]'))) { addOne(b.getAttribute('data-add')); return; }
     if ((b = t.closest('[data-q]'))) { var id = b.getAttribute('data-id'); setQty(id, (cart[id] || 0) + +b.getAttribute('data-q')); return; }
     if ((b = t.closest('[data-rm]'))) { setQty(b.getAttribute('data-rm'), 0); toast('Article retiré'); return; }
@@ -678,6 +726,7 @@
   });
   document.addEventListener('keydown', function (e) {
     if ((e.key === 'Enter' || e.key === ' ') && e.target.closest && e.target.closest('.ecl .hs')) { e.preventDefault(); selectPart(e.target.closest('.hs').getAttribute('data-k'), true); }
+    if (e.key === 'Escape' && $('.m3d')) close3d();
     if (e.key === 'Escape' && $('#side.open')) { $('#side').classList.remove('open'); document.body.classList.remove('lock'); }
   });
   document.addEventListener('change', function (e) {
