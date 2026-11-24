@@ -4,6 +4,13 @@ Maquette non publiée par SACRI, non indexée (noindex + robots.txt).
 Références, disponibilités et reconnaissance par photo : indicatives, à remplacer par le stock réel de SACRI.
 Aucune donnée n'est envoyée : la demande de devis est préparée sur l'appareil, la photo déposée reste dans le navigateur.
 
+## Version 7 (24/11/2026)
+- Accueil en vitrine : bandeau photo STIHL avec recherche, bande de réassurance (pièces d'origine, atelier et SAV, depuis 1985, ISO 9001 cité sur sacri-ci.com), familles en tuiles photo, « Les plus demandées », marques distribuées.
+- Fiche MS 661 : galerie de 4 vues, tableau des caractéristiques, « Pièces d'usure à prévoir », « Souvent commandé ensemble », vue 3D intégrée (fenêtre, Échap pour fermer).
+- Visuels fabricant STIHL (fiches produits stihl.fr, relevé du 24/11/2026) pour les pièces STIHL ; à confirmer avec SACRI, représentant STIHL, pour un usage public.
+- Nouvelles photos Commons : Oil filter (Elwood, domaine public), Prototype Hydraulic Valve Block with PWM Solenoid Valves (PWMhistorical, CC BY-SA 4.0).
+- Modèle 3D : « Chainsaw » par Rescue3D Assets, CC BY 4.0, https://sketchfab.com/3d-models/chainsaw-8d1c55a879b046ba940414f5ee57f401
+
 ## Photos
 - Photos produits SACRI : https://www.sacri-ci.com/ (relevé du 18/11/2026).
 - Photos libres Wikimedia Commons, auteur et licence affichés sur chaque fiche :
