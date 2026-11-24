@@ -280,3 +280,7 @@ footer{background:var(--ink);color:#BEBAB5;padding:56px 0 28px;font-size:14px}
 .sq.on{border-color:var(--ink);background:var(--ink);color:#fff}
 @media (max-width:560px){.card .add .l{display:none}.card .add .s{display:inline}.card .add{font-size:13px;padding:9px 8px}.fams{grid-template-columns:1fr 1fr;gap:8px}.fam{padding:10px 8px;font-size:12px;gap:6px}.fam svg{width:18px;height:18px}.socq{flex-wrap:nowrap;overflow-x:auto;max-width:100%}.socq-w{flex-wrap:nowrap}.sq{white-space:nowrap}.counter{font-size:13px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* Rangée Société sur téléphone : fondu à droite pour signaler le défilement (contrôle du 24/11) */
+@media (max-width:560px){.socq-w{min-width:0}.socq{flex:1 1 auto;min-width:0;scrollbar-width:none;padding-right:28px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent)}.socq::-webkit-scrollbar{display:none}.socq.fin{-webkit-mask-image:none;mask-image:none}}
+/* Barre de recherche sur téléphone : place pour le texte d'exemple entier (contrôle du 24/11) */
+@media (max-width:560px){.search{padding:5px 5px 5px 10px}.search .ic{width:18px;height:18px;flex:none}.search input{padding:10px 4px 10px 6px}.search input::placeholder{color:#8a8580;font-size:15px}.search button{padding:12px 10px;font-size:14px}.search .cam{width:36px;height:36px;margin-right:4px}}

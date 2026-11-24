@@ -194,7 +194,7 @@
   function open(id) {
     var x = byId[id]; if (!x) return; var d = DISPO[x.dispo];
     $('#m-pic').innerHTML = pic(x, 'big');
-    $('#m-credit').innerHTML = x.lic ? 'Photo : <a href="' + x.lic.u + '" target="_blank" rel="noopener">' + esc(x.lic.a) + '</a>, ' + esc(x.lic.l) + ', Wikimedia Commons' : (x.src ? 'Photo : ' + x.src : '');
+    $('#m-credit').innerHTML = x.lic ? 'Photo : <a href="' + x.lic.u + '" target="_blank" rel="noopener">' + esc(x.lic.a) + '</a>, ' + esc(x.lic.l) + ', Wikimedia Commons' : (x.srcu ? 'Photo : <a href="' + x.srcu + '" target="_blank" rel="noopener">' + esc(x.src) + '</a>' : (x.src ? 'Photo : ' + x.src : ''));
     $('#m-soc').textContent = 'Vendu par ' + x.soc;
     $('#m-nom').textContent = x.nom;
     $('#m-ref').textContent = 'Réf. ' + x.id;
@@ -265,4 +265,18 @@
   $('#id-res').addEventListener('click', function (e) { var b = e.target.closest('[data-open]'); if (b) open(b.getAttribute('data-open')); });
 
   count(); render();
+})();
+
+/* Texte d'exemple court sur téléphone (contrôle du 24/11) */
+(function () {
+  var q = document.getElementById('q'); if (!q || !window.matchMedia) return;
+  var long = q.getAttribute('placeholder'), mq = window.matchMedia('(max-width: 560px)');
+  function set() { q.setAttribute('placeholder', mq.matches ? 'Référence ou machine' : long); }
+  set(); if (mq.addEventListener) mq.addEventListener('change', set); else if (mq.addListener) mq.addListener(set);
+})();
+/* Fondu retiré quand la rangée Société est défilée jusqu'au bout */
+(function () {
+  var s = document.getElementById('socq'); if (!s) return;
+  function f() { s.classList.toggle('fin', s.scrollLeft + s.clientWidth >= s.scrollWidth - 4); }
+  s.addEventListener('scroll', f, { passive: true }); window.addEventListener('resize', f); setTimeout(f, 50);
 })();
