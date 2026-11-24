@@ -484,7 +484,7 @@
       '<div class="cat-h"><h1>Comparer des machines</h1><p class="count">Choisissez 2 ou 3 machines. Caractéristiques relevées sur les fiches STIHL.</p></div>' +
       '<div class="cslots">' + slots + '</div>' +
       '<label class="ck diff"><input type="checkbox" id="diff"' + (diffOnly ? ' checked' : '') + '><span>Afficher seulement les différences</span></label>' +
-      '<div class="ctable-w"><table class="ctable n' + ms.length + '"><thead><tr><th scope="col"><span class="sr">Caractéristique</span></th>' + ms.map(function (m) {
+      (ms.length > 2 ? '<p class="c-hint">Faites glisser le tableau vers la gauche pour voir la machine 3.</p>' : '') + '<div class="ctable-w"><table class="ctable n' + ms.length + '"><thead><tr><th scope="col"><span class="sr">Caractéristique</span></th>' + ms.map(function (m) {
         return '<th scope="col"><a href="#/machine/' + m.slug + '" class="cth">' + (m.img ? '<img src="' + m.img + '" alt="">' : '') + '<b>' + esc(m.nom) + '</b></a><div class="slot" data-slot="' + m.id + '">' + qtyCtl(m.id) + '</div></th>';
       }).join('') + '</tr></thead><tbody>' + rows.filter(function (r) { return !diffOnly || isDiff(r); }).map(function (r) { return '<tr' + (ms.length > 1 && isDiff(r) ? ' class="df"' : '') + '><th scope="row">' + esc(r[0]) + '</th>' + ms.map(function (m) { return '<td>' + r[1](m) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>' +
       (ms.length < 2 ? '<p class="muted">Ajoutez une deuxième machine pour comparer.</p>' : '') + '</div>';

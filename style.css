@@ -323,6 +323,7 @@ select:focus{border-color:var(--o);outline:0}
 .cth img{height:110px;width:100%;object-fit:contain}
 .cth b{font-size:15.5px}
 .ctable thead .slot{margin-top:10px}
+.c-hint{display:none;align-items:center;gap:6px;font-size:13px;color:var(--ink2);margin:0 0 8px}
 
 /* Devis */
 .dv-grid{display:grid;grid-template-columns:1fr 380px;gap:32px;align-items:start}
@@ -426,9 +427,17 @@ select:focus{border-color:var(--o);outline:0}
  .a-img{padding:16px}
  .specs th{width:46%}
  .cslots{grid-template-columns:1fr;gap:8px}
- .ctable{font-size:13.5px}
- .ctable th,.ctable td{padding:10px}
- .ctable tbody th{width:110px}
+ .ctable-w{max-width:100%;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+ .ctable{font-size:13.5px;min-width:0;width:auto;table-layout:fixed}
+ .ctable th,.ctable td{padding:10px;overflow-wrap:break-word;hyphens:auto;-webkit-hyphens:auto}
+ .ctable thead th:first-child,.ctable tbody th{position:sticky;left:0;z-index:2;width:104px;min-width:104px;max-width:104px;box-shadow:1px 0 0 var(--line)}
+ .ctable thead th:first-child{background:#fff}
+ .ctable thead th:not(:first-child),.ctable td{width:134px;min-width:134px;max-width:134px}
+ .ctable .qty button{width:36px}
+ .ctable .add{gap:0;padding:0 6px;min-height:40px}
+ .ctable .add svg{display:none}
+ .ctable .add span{font-size:13px}
+ .c-hint{display:flex}
  .cth img{height:80px}
  .cmpbar{bottom:calc(var(--tab) + 10px);font-size:13.5px}
  .ecl-wrap{padding:6px;margin:0 -6px}
